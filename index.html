@@ -1,0 +1,165 @@
+ <html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>註冊表單</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">註冊表單</h1>
+    <form id="myForm">
+      <div class="mb-3">
+        <label for="username" class="form-label">使用者名稱：</label>
+        <input type="text" id="username" name="username" class="form-control" placeholder="使用者名稱">
+      </div>
+      
+      <div class="mb-3">
+        <label for="password" class="form-label">密碼：</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="您的密碼">
+      </div>
+      
+      <div class="mb-3">
+        <label for="City" class="form-label">你來自：</label>
+        <select name="City" id="City" class="form-select">
+          <option value="台北市">台北市</option>
+          <option value="台中市">台中市</option>
+          <option value="高雄市">高雄市</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">性別：</label><br>
+        <div class="form-check form-check-inline">
+          <input type="radio" id="男" name="Gender" value="男" class="form-check-input">
+          <label for="男" class="form-check-label">男</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input type="radio" id="女" name="Gender" value="女" class="form-check-input">
+          <label for="女" class="form-check-label">女</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input type="radio" id="其他" name="Gender" value="其他" class="form-check-input">
+          <label for="其他" class="form-check-label">其他</label>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">選擇興趣愛好：</label><br>
+        <div class="form-check form-check-inline">
+          <input type="checkbox" id="閱讀" name="Hobby" value="閱讀" class="form-check-input">
+          <label for="閱讀" class="form-check-label">閱讀</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input type="checkbox" id="旅行" name="Hobby" value="旅行" class="form-check-input">
+          <label for="旅行" class="form-check-label">旅行</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input type="checkbox" id="運動" name="Hobby" value="運動" class="form-check-input">
+          <label for="運動" class="form-check-label">運動</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input type="checkbox" id="音樂" name="Hobby" value="音樂" class="form-check-input">
+          <label for="音樂" class="form-check-label">音樂</label>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label for="Introduction" class="form-label">自我介紹：</label>
+        <textarea id="Introduction" name="Introduction" rows="4" class="form-control">My name is...</textarea>
+      </div>
+      
+      <input type="submit" value="提交">
+		
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+   
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      var username = document.getElementById('username').value.trim();
+      var password = document.getElementById('password').value.trim();
+      var City = document.getElementById('City').value.trim();
+      var genderSelected = false;
+
+      var genderOptions = document.getElementsByName('Gender');
+      for (var i = 0; i < genderOptions.length; i++) {
+        if (genderOptions[i].checked) {
+          genderSelected = true;
+          break;
+        }
+      }
+
+      if (username === "") {
+        alert('使用者名稱不能為空！');
+        return false;
+      }
+      if (password === "") {
+        alert('密碼不能為空！');
+        return false;
+      }
+      if (City === "") {
+        alert('請選擇您的所在城市！');
+        return false;
+      }
+      if (!genderSelected) {
+        alert('請選擇性別！');
+        return false;
+      }
+
+      var formData = {
+        username: username,
+        password: password,
+        City: City,
+        Gender: getSelectedRadioValue('Gender'),
+        Hobby: getSelectedCheckboxValues('Hobby'),
+        Introduction: document.getElementById('Introduction').value.trim()
+      };
+
+      localStorage.setItem('formData', JSON.stringify(formData));
+      console.log('Form data saved to localStorage:', formData);
+      window.location.href = '商品頁面.html';
+      
+    }
+    
+    document.getElementById('myForm').addEventListener('submit', handleSubmit);
+
+    // Function to get the value of selected radio button
+    function getSelectedRadioValue(name) {
+      var radios = document.getElementsByName(name);
+      for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+          return radios[i].value;
+        }
+      }
+      return '';
+    }
+
+    // Function to get an array of selected checkbox values
+    function getSelectedCheckboxValues(name) {
+      var checkboxes = document.getElementsByName(name);
+      var values = [];
+      checkboxes.forEach(function(checkbox) {
+        if (checkbox.checked) {
+          values.push(checkbox.value);
+        }
+      });
+      return values;
+    }
+  </script>
+</body>
+</html>

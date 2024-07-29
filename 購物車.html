@@ -1,0 +1,230 @@
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購物車</title>
+    <style>
+        body {
+            background-color: #eae2b7;
+            color: #003049;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #003049;
+            text-align: center;
+            text-shadow: 0 0 5px;
+        }
+
+        h2 {
+            color: #e76f51;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 60%;
+            margin: 20px auto;
+            background-color: #fefae0;
+            border-collapse: collapse;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            color: #ffffff;
+            background-color: #f4a261;
+            width: 25%;
+        }
+
+        td {
+            background-color: #fefae0;
+            border-bottom: 1px solid #003049;
+            vertical-align: middle;
+        }
+
+        td img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="submit"] {
+            padding: 5px 10px;
+            background-color: #e76f51;
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 20px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            width: auto;
+        }
+
+        .form-section h2 {
+            color: #e76f51;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .form-section input[type="text"],
+        .form-section select {
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .success {
+            background-color: #003049;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>購物車</h1>
+
+    <h2>已購買的商品</h2>
+    <table border="0">
+        <tr>
+            <th>商品圖片</th>
+            <th>商品名稱</th>
+            <th>價格</th>
+            <th>數量</th>
+        </tr>
+        <tr>
+            <td>
+                <img src="https://linefriends.tw/cdn/shop/files/NJS-JP_mu_D2_1.jpg?v=1719231395&width=750" alt="商品1" style="width: 50%;">
+            </td>
+            <td>商品1</td>
+            <td>NT$100</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="https://linefriends.tw/cdn/shop/files/NJS-JP_h1.jpg?v=1719232449&width=750" alt="商品2" style="width: 50%;">
+            </td>
+            <td>商品2</td>
+            <td>NT$200</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>
+                <img src="https://linefriends.tw/cdn/shop/files/NJS-JP_T5_3.jpg?v=1719231818&width=750" alt="商品3" style="width: 50%;">
+            </td>
+            <td>商品3</td>
+            <td>NT$300</td>
+            <td>1</td>
+        </tr>
+    </table>
+
+    <form id="myForm" method="POST" action="https://httpbin.org/post" onsubmit="submitForm(event)">
+        <div class="form-section">
+            <h2>取貨方式</h2>
+            <div class="input-group">
+                <label for="brand">超商取貨：</label>
+                <select class="word" name="brand" id="brand">
+                    <option value="" selected disabled>請選擇取貨方式</option>
+                    <option value="全家">全家</option>
+                    <option value="711">711</option>
+                    <option value="萊爾富">萊爾富</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>宅急便</h2>
+            <div class="input-group">
+                <label for="address">輸入地址：</label>
+                <input class="word" type="text" id="address" name="address">
+            </div>
+        </div>
+
+        <input type="submit" value="提交">
+    </form>
+
+    <div id="output" class="output"></div>
+
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
+
+            var brand = document.getElementById('brand').value.trim();
+            var address = document.getElementById('address').value.trim();
+
+            if (brand === "") {
+                alert('取貨方式不能為空！');
+                return false;
+            }
+            if (address === "") {
+                alert('地址不能為空！');
+                return false;
+            }
+
+            var formData = {
+                brand: brand,
+                address: address
+            };
+
+            localStorage.setItem('formData', JSON.stringify(formData));
+            console.log('Form data saved to localStorage:', formData);
+
+            const url = 'https://httpbin.org/post';
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = `
+                    <div class="success">
+                        <p><strong>購買成功!</strong></p>
+                        <p><strong>訂單編號:</strong> ${data.origin}</p>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+
+</html>
